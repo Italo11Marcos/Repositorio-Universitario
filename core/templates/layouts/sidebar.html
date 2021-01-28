@@ -1,0 +1,98 @@
+{% load static %}
+<aside class="main-sidebar sidebar-dark-secondary elevation-4">
+    <!-- Brand Logo -->
+    <a href="#" class="brand-link">
+      <img src="{% static 'dist/img/logo-unimontes-branco.png' %}"
+           alt="AdminLTE Logo"
+           class="brand-image "
+           style="opacity: .8">
+      <span class="brand-text font-weight-light">Repositório</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          {% if not request.user.is_staff %}
+          {% endif %}
+          {% if request.user.is_staff %}
+          {% endif %}
+          <!-- Cursos -->
+          <li class="nav-item has-treeview">
+            <a href="{% url 'curso-index' %}" class="nav-link">
+              <i class="nav-icon fas fa-graduation-cap"></i>
+              <p>
+                Cursos
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
+           <!-- Programas -->
+           <li class="nav-item has-treeview">
+            <a href="{% url 'programa-index' %}" class="nav-link">
+              <i class="nav-icon fas fa-chalkboard-teacher"></i>
+              <p>
+                Programas
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
+          <!-- PalavrasChave -->
+          <li class="nav-item has-treeview">
+            <a href="{% url 'key-index' %}" class="nav-link">
+              <i class="nav-icon fas fa-tag"></i>
+              <p>
+                Palavras Chave
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
+          <!-- TipoDocumento -->
+          <li class="nav-item has-treeview">
+            <a href="{% url 'documento-index' %}" class="nav-link">
+              <i class="nav-icon fas fa-file"></i>
+              <p>
+                Tipos Documento
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
+          <!-- AnoPublicação -->
+          <li class="nav-item has-treeview">
+            <a href="{% url 'publicacao-index' %}" class="nav-link">
+              <i class="nav-icon fas fa-layer-group"></i>
+              <p>
+                Ano Publicação
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
+          <!-- Orientador -->
+          <li class="nav-item has-treeview">
+            <a href="{% url 'orientador-index' %}" class="nav-link">
+              <i class="nav-icon fas fa-user-shield"></i>
+              <p>
+                Orientador
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
+          <!-- Autor -->
+          <li class="nav-item has-treeview">
+            <a href="{% url 'autor-index' %}" class="nav-link">
+              <i class="nav-icon fas fa-user"></i>
+              <p>
+                Autor
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

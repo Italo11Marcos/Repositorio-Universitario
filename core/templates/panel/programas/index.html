@@ -1,0 +1,161 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %} Cursos - Painel de Controle {% endblock %} 
+
+{% block head %}
+<!-- DataTables -->
+<link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+{% endblock %}
+
+{% block layouts %}
+
+    {% include 'layouts/navbar.html' %}
+
+    {% include 'layouts/sidebar.html' %}
+
+{% endblock %}
+
+{% block content %}
+{% load widget_tweaks %}
+ <!-- Content Wrapper. Contains page content -->
+ <div class="content-wrapper">
+    <br>
+    <!-- Content Header (Page header) -->
+
+    <!-- Main content -->
+    <section class="content">
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"><label>Programas</label></h3>
+          <a href="#" title="Cadastrar" class="text-success" data-toggle="modal" data-target="#modalCreate">
+            <i class="fas fa-plus-circle"></i>
+          </a>
+        </div>
+        <div class="card-body">
+          <table id="table-programa" class="table table-bordered table-hover dataTable">
+            <thead>
+                <tr>
+                    <th class="text-center">Nome</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in programas %}
+                    <tr>
+                        <td>{{ p.nome }}</td>
+                        <td>
+                            <a href="{% url 'programa-detail' p.pk %}" title="Informações"><i class="far fa-eye"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+          
+        </div>
+      </div>
+
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+
+{% block footer %}
+
+    {% include 'layouts/footer.html' %}
+
+{% endblock %}
+
+{% block js %}
+
+<!--Modal Create-->
+<div class="modal fade" id="modalCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'programa-create' %}" method="post" id="form-programa">
+          {% csrf_token %}
+          <input type="text" class="form-control" name="nome">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button type="submit" class="btn btn-success">Cadastrar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- jquery-validation -->
+<script src="{% static 'plugins/jquery-validation/jquery.validate.min.js' %}"></script>
+<script src="{% static 'plugins/jquery-validation/additional-methods.min.js' %}"></script>
+
+<!-- DataTables -->
+<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+
+<script>
+  $(function () {
+    $("#table-programa").DataTable({
+      "responsive": true,
+      "autoWidth": false,
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+  $('#form-programa').validate({
+    rules: {
+      nome: {
+        required: true,
+        maxlength: 45
+      },
+    },
+    messages: {
+      nome: {
+        required: "Esse campo é obrigatório",
+        maxlength: "Limite máximo de 45 caracteres"
+      },
+    },
+    errorElement: 'span',
+    errorPlacement: function (error, element) {
+      error.addClass('invalid-feedback');
+      element.closest('.form-group').append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+      $(element).addClass('is-invalid');
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).removeClass('is-invalid');
+      $(element).addClass('is-valid');
+    }
+  });
+});
+</script>
+
+{% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'alert-success'%}
+                <script type=text/javascript>toastr.success('{{ message }}')</script>
+            {% elif message.tags == 'alert-info' %}
+                <script type=text/javascript>toastr.info('{{ message }}')</script>
+            {% elif message.tags == 'alert-warning' %}
+                <script type=text/javascript>toastr.warning('{{ message }}')</script>
+            {% elif message.tags == 'alert-error' %}
+                <script type=text/javascript>toastr.error('{{ message }}')</script>
+            {% endif %}
+        {% endfor %}
+{% endif %}
+
+{% endblock %}

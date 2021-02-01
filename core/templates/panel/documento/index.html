@@ -1,12 +1,19 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 
-{% block title %} Tipo Documento - Painel de Controle {% endblock %} 
+{% block title %} Documento - Painel de Controle {% endblock %} 
 
 {% block head %}
 <!-- DataTables -->
 <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
 <link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
 {% endblock %}
 
 {% block layouts %}
@@ -29,25 +36,29 @@
 
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title"><label>Tipos Documento</label></h3>
+          <h3 class="card-title"><label>Documentos</label></h3>
           <a href="#" title="Cadastrar" class="text-success" data-toggle="modal" data-target="#modalCreate">
             <i class="fas fa-plus-circle"></i>
           </a>
         </div>
         <div class="card-body">
-          <table id="table-tipo" class="table table-bordered table-hover dataTable">
+          <table id="table-documento" class="table table-bordered table-hover dataTable">
             <thead>
                 <tr>
-                    <th class="text-center">Nome</th>
+                    <th class="text-center">Título</th>
+                    <th class="text-center">Programa</th>
+                    <th class="text-center">Ano</th>
                     <th class="text-center">Ações</th>
                 </tr>
             </thead>
             <tbody>
-                {% for t in tipos %}
+                {% for d in documentos %}
                     <tr>
-                        <td>{{ t.nome }}</td>
+                        <td>{{ d.titulo }}</td>
+                        <td>{{ d.programa }}</td>
+                        <td>{{ d.ano }}</td>
                         <td>
-                            <a href="{% url 'tipo-detail' t.pk %}" title="Informações"><i class="far fa-eye"></i></a>
+                            <a href="{% url 'documento-detail' d.pk %}" title="Informações"><i class="far fa-eye"></i></a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -81,9 +92,48 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="{% url 'tipo-create' %}" method="post" id="form-tipo">
+        <form action="{% url 'documento-create' %}" method="post" id="form-documento" enctype="multipart/form-data">
           {% csrf_token %}
-          <input type="text" class="form-control" name="nome">
+          <label>Título</label>
+          <input type="text" class="form-control" name="titulo">
+          <label>Arquivo</label>
+          <input type="file" class="form-control" name="file">
+          <label>Autor</label>
+          <select name="autor" class="duallistbox" multiple="multiple" required>
+            {% for a in autors %}
+              <option value="{{ a.matricula }}">{{ a.nome }}</option>
+            {% endfor %}
+          </select>
+          <label>Programa</label>
+          <select class="select2" multiple="multiple" data-placeholder="Selecione programa" style="width: 50%;" name="programa">
+            {% for p in programas %}
+              <option value="{{ p.id }}">{{ p.nome }}</option>
+            {% endfor %}
+          </select>
+          <label>Orientador</label>
+          <select class="select2" multiple="multiple" data-placeholder="Selecione o Orientador" style="width: 50%;" name="orientador">
+            {% for o in orientadors %}
+              <option value="{{ o.matricula }}">{{ o.nome }}</option>
+            {% endfor %}
+          </select>
+          <label>Tipo</label>
+          <select class="select2" multiple="multiple" data-placeholder="Selecione o tipo" style="width: 50%;" name="tipo">
+            {% for t in tipos %}
+              <option value="{{ t.id }}">{{ t.nome }}</option>
+            {% endfor %}
+          </select>
+          <label>Palavras-Chave</label>
+          <select name="keys" class="duallistbox" multiple="multiple" required>
+            {% for k in keys %}
+              <option value="{{ k.id }}">{{ k.nome }}</option>
+            {% endfor %}
+          </select>
+          <label>Ano</label>
+          <select class="select2" multiple="multiple" data-placeholder="Selecione o ano" style="width: 50%;" name="ano">
+            {% for a in anos %}
+              <option value="{{ a.id }}">{{ a.ano }}</option>
+            {% endfor %}
+          </select>  
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -104,9 +154,15 @@
 <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
 
+<!-- Select2 -->
+<script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+
 <script>
   $(function () {
-    $("#table-tipo").DataTable({
+    $("#table-documento").DataTable({
       "responsive": true,
       "autoWidth": false,
     });
@@ -114,19 +170,46 @@
 </script>
 
 <script>
+   $(function () {
+    //Initialize Select2 Elements
+    $('.select2').select2()
+
+    //Initialize Select2 Elements
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })
+   }); 
+</script>
+
+<script>
+    //Bootstrap Duallistbox
+    $('.duallistbox').bootstrapDualListbox()
+</script>
+
+<script>
   $(document).ready(function () {
-  $('#form-tipo').validate({
+  $('#form-documento').validate({
     rules: {
+      matricula: {
+        required: true,
+        max: 99999999,
+        min: 11111111,
+      },
       nome: {
         required: true,
-        maxlength: 10
-      },
+        maxlength: 200, 
+      }
     },
     messages: {
-      nome: {
+      matricula: {
         required: "Esse campo é obrigatório",
-        maxlength: "Limite máximo de 10 caracteres"
+        maxlength: "Matricula deve ser menor que 99999999",
+        minlength: "Matricula deve ser maior que 11111111"
       },
+      nome: {
+        required: "Esste campo é obrigatório",
+        maxlength: "Máximo permitido de 200 caracteres",
+      }
     },
     errorElement: 'span',
     errorPlacement: function (error, element) {

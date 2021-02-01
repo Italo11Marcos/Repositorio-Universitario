@@ -170,12 +170,12 @@ class ListTipoDocumentoView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ListTipoDocumentoView, self).get_context_data(**kwargs)
-        context['documentos'] = TipoDocumento.objects.order_by('?').all()
+        context['tipos'] = TipoDocumento.objects.order_by('?').all()
         return context
 
 class CreateTipoDocumentoView(CreateView):
     form_class = TipoDocumentoForm
-    success_url = reverse_lazy('documento-index')
+    success_url = reverse_lazy('tipo-index')
 
     def form_valid(self, form, *args, **kwargs):
         messages.success(self.request, 'Tipo de Documento Cadastrado com sucesso!')
@@ -188,12 +188,12 @@ class CreateTipoDocumentoView(CreateView):
 class DetailTipoDocumentoView(DetailView):
     model = TipoDocumento
     template_name = 'panel/tipodocumentos/detail.html'
-    context_object_name = 'documento'
+    context_object_name = 'tipo'
 
 class UpdateTipoDocumentoView(UpdateView):
     model = TipoDocumento
     fields = ['nome']
-    success_url = reverse_lazy('documento-index')
+    success_url = reverse_lazy('tipo-index')
 
     def form_valid(self, form, *args, **kwargs):
         messages.success(self.request, 'Tipo de Documento editado com sucesso!')
@@ -205,7 +205,7 @@ class UpdateTipoDocumentoView(UpdateView):
 
 class DeleteTipoDocumentoView(DeleteView):
     model = TipoDocumento
-    success_url = reverse_lazy('documento-index')
+    success_url = reverse_lazy('tipo-index')
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -364,6 +364,64 @@ class DeleteAutorView(DeleteView):
         self.object = self.get_object()
         self.object.delete()
         messages.success(self.request, 'Autor(a) excluído(a) com sucesso!')
+        success_url = self.get_success_url()
+        return HttpResponseRedirect(success_url)
+
+#Documento Views
+class ListDocumentoView(ListView):
+    model = Documento
+    template_name = 'panel/documento/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ListDocumentoView, self).get_context_data(**kwargs)
+        context['documentos'] = Documento.objects.order_by('?').all()
+        context['autors'] = Autor.objects.order_by('?').all()
+        context['programas'] = Programa.objects.order_by('?').all()
+        context['orientadors'] = Orientador.objects.order_by('?').all()
+        context['tipos'] = TipoDocumento.objects.order_by('?').all()
+        context['anos'] = AnoPublicacao.objects.order_by('?').all()
+        context['keys'] = PalavrasChave.objects.order_by('?').all()
+        return context
+
+class CreateDocumentoView(CreateView):
+    model = Documento
+    form_class = DocumentoForm
+    success_url = reverse_lazy('documento-index')
+
+    def form_valid(self, form, *args, **kwargs):
+        messages.success(self.request, 'Documento Cadastrado com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form, *args, **kwargs):
+        messages.error(self.request, 'Tivemos algum problema')
+        return super().form_valid(form)
+
+class DetailDocumentoView(DetailView):
+    model = Documento
+    template_name = 'panel/documento/detail.html'
+    context_object_name = 'documento'
+
+class UpdateDocumentoView(UpdateView):
+    model = Documento
+    fields = ['matricula', 'nome']
+    success_url = reverse_lazy('documento-index')
+
+    def form_valid(self, form, *args, **kwargs):
+        messages.success(self.request, 'Documento(a) editado(a) com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form, *args, **kwargs):
+        messages.error(self.request, 'Tivemos algum problema')
+        return super().form_valid(form)
+
+class DeleteDocumentoView(DeleteView):
+    model = Documento
+    success_url = reverse_lazy('documento-index')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        messages.success(self.request, 'Documento(a) excluído(a) com sucesso!')
         success_url = self.get_success_url()
         return HttpResponseRedirect(success_url)
 

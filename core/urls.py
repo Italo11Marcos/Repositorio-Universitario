@@ -1,5 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 from .views import *
 
 urlpatterns = [
@@ -28,11 +30,11 @@ urlpatterns = [
     path('admin/panel/keys/atualizar/<int:pk>', UpdateKeyView.as_view(), name='key-update'),
     path('admin/panel/keys/deletar/<int:pk>', DeleteKeyView.as_view(), name='key-delete'),
     #URLs Tipo Documentos
-    path('admin/panel/tipos/documento/', ListTipoDocumentoView.as_view(), name='documento-index'),
-    path('admin/panel/tipos/documento/cadastrar', CreateTipoDocumentoView.as_view(), name='documento-create'),
-    path('admin/panel/tipos/documento/<uuid:pk>', DetailTipoDocumentoView.as_view(), name='documento-detail'),
-    path('admin/panel/tipos/documento/atualizar/<uuid:pk>', UpdateTipoDocumentoView.as_view(), name='documento-update'),
-    path('admin/panel/tipos/documento/deletar/<uuid:pk>', DeleteTipoDocumentoView.as_view(), name='documento-delete'),
+    path('admin/panel/tipos/', ListTipoDocumentoView.as_view(), name='tipo-index'),
+    path('admin/panel/tipos/cadastrar', CreateTipoDocumentoView.as_view(), name='tipo-create'),
+    path('admin/panel/tipos/<uuid:pk>', DetailTipoDocumentoView.as_view(), name='tipo-detail'),
+    path('admin/panel/tipos/atualizar/<uuid:pk>', UpdateTipoDocumentoView.as_view(), name='tipo-update'),
+    path('admin/panel/tipos/deletar/<uuid:pk>', DeleteTipoDocumentoView.as_view(), name='tipo-delete'),
     #URLs Ano Publicação
     path('admin/panel/ano-publicacao/', ListAnoPublicacaoView.as_view(), name='publicacao-index'),
     path('admin/panel/ano-publicacao/cadastrar', CreateAnoPublicacaoView.as_view(), name='publicacao-create'),
@@ -51,5 +53,11 @@ urlpatterns = [
     path('admin/panel/autor/<int:pk>', DetailAutorView.as_view(), name='autor-detail'),
     path('admin/panel/autor/atualizar/<int:pk>', UpdateAutorView.as_view(), name='autor-update'),
     path('admin/panel/autor/deletar/<int:pk>', DeleteAutorView.as_view(), name='autor-delete'),
-    
+    #URLs Documento
+    path('admin/panel/documentos/', ListDocumentoView.as_view(), name='documento-index'),
+    path('admin/panel/documentos/cadastrar', CreateDocumentoView.as_view(), name='documento-create'),
+    path('admin/panel/documentos/<uuid:pk>', DetailDocumentoView.as_view(), name='documento-detail'),
+    path('admin/panel/documentos/atualizar/<uuid:pk>', UpdateDocumentoView.as_view(), name='documento-update'),
+    path('admin/panel/documentos/deletar/<uuid:pk>', DeleteDocumentoView.as_view(), name='documento-delete'),
 ]
+

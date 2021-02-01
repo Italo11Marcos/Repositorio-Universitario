@@ -52,7 +52,7 @@
           </li>
           <!-- TipoDocumento -->
           <li class="nav-item has-treeview">
-            <a href="{% url 'documento-index' %}" class="nav-link">
+            <a href="{% url 'tipo-index' %}" class="nav-link">
               <i class="nav-icon fas fa-file"></i>
               <p>
                 Tipos Documento
@@ -86,6 +86,16 @@
               <i class="nav-icon fas fa-user"></i>
               <p>
                 Autor
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
+          <!-- Documentos -->
+          <li class="nav-item has-treeview">
+            <a href="{% url 'documento-index' %}" class="nav-link">
+              <i class="nav-icon fas fa-file-pdf"></i>
+              <p>
+                Documentos
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>

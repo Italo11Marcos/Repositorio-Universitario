@@ -127,3 +127,20 @@ class AutorForm(forms.ModelForm):
             raise ValidationError(_('Nome não deve passar de 200 caracteres'))
 
         return nome
+
+#Documento Form
+class DocumentoForm(forms.ModelForm):
+    class Meta:
+        model = Documento
+        fields = ['titulo', 'file', 'autor', 'programa', 'orientador', 'keys', 'ano', 'tipo']
+
+    def clean_titulo(self):
+        titulo = self.cleaned_data['titulo']
+    
+        #Checa se o Documento tem mais de 200 aracteres
+        if len(str(titulo)) > 200:
+            raise ValidationError(_('Título deve ter menos de 200 caracteres'))
+
+        return titulo
+
+        

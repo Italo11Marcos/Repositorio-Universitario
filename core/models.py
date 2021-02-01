@@ -1,6 +1,17 @@
 from django.db import models
 import uuid
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+import os
+import random
+
+def path_and_rename(instance, filename):
+    path = "documentos/pdfs/"
+    ext = filename.split('.')[-1]
+    original = filename.split('.')[0]
+    rand = random.randint(11111111,99999999)
+    filename = '{}+{}.{}'.format(original, rand, ext)
+    return os.path.join(path, filename)
+
 
 class UsuarioManager(BaseUserManager):
 
@@ -96,7 +107,7 @@ class Autor(models.Model):
 class Documento(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     titulo = models.CharField(max_length=200)
-    file = models.FileField()
+    file = models.FileField(upload_to=path_and_rename)
     autor = models.ManyToManyField(Autor)
     programa = models.ForeignKey(Programa, on_delete=models.SET_NULL, null=True)
     orientador = models.ForeignKey(Orientador, on_delete=models.SET_NULL, null=True)
@@ -106,5 +117,6 @@ class Documento(models.Model):
 
     def __str__(self):
         return self.titulo
+
 
 

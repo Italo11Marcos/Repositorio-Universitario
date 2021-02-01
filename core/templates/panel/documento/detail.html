@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 
-{% block title %} Tipo Documento - Painel de Controle {% endblock %} 
+{% block title %} Documento - Painel de Controle {% endblock %} 
 
 {% block head %}
 <!-- DataTables -->
@@ -29,11 +29,11 @@
 
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title"> <label>{{ tipo.nome }}</label></h3>
+          <h3 class="card-title"> <label>{{ documento.titulo }}</label></h3>
         </div>
         <div class="card-body">
-          <p> <label>Arquivo vinculados a esse tipo de tipo: </label> 0</p>
-          
+          <p> <label>{{ documento.tipo }}</label> 0 </p>
+          <a href="{{ documento.file.url }}" target="_blank" rel="noopener noreferrer">Arquivo</a>
           <div class="row">
             
           </div>
@@ -60,9 +60,53 @@
           </button>
         </div>
         <div class="modal-body">
-          <form action="{% url 'tipo-update' tipo.pk %}" method="post">
+          <form action="{% url 'documento-update' documento.pk %}" method="post" id="form-documento" enctype="multipart/form-data">
+              {% csrf_token %}
+              <label>Título</label>
+              <input type="text" class="form-control" name="titulo">
+              <label>Arquivo</label>
+              <input type="file" class="form-control" name="file">
+              <label>Autor</label>
+              <select name="autor" class="duallistbox" multiple="multiple" required>
+                {% for a in autors %}
+                  <option value="{{ a.matricula }}">{{ a.nome }}</option>
+                {% endfor %}
+              </select>
+              <label>Programa</label>
+              <select class="select2" multiple="multiple" data-placeholder="Selecione programa" style="width: 50%;" name="programa">
+                {% for p in programas %}
+                  <option value="{{ p.id }}">{{ p.nome }}</option>
+                {% endfor %}
+              </select>
+              <label>Orientador</label>
+              <select class="select2" multiple="multiple" data-placeholder="Selecione o Orientador" style="width: 50%;" name="orientador">
+                {% for o in orientadors %}
+                  <option value="{{ o.matricula }}">{{ o.nome }}</option>
+                {% endfor %}
+              </select>
+              <label>Tipo</label>
+              <select class="select2" multiple="multiple" data-placeholder="Selecione o tipo" style="width: 50%;" name="tipo">
+                {% for t in tipos %}
+                  <option value="{{ t.id }}">{{ t.nome }}</option>
+                {% endfor %}
+              </select>
+              <label>Palavras-Chave</label>
+              <select name="keys" class="duallistbox" multiple="multiple" required>
+                {% for k in keys %}
+                  <option value="{{ k.id }}">{{ k.nome }}</option>
+                {% endfor %}
+              </select>
+              <label>Ano</label>
+              <select class="select2" multiple="multiple" data-placeholder="Selecione o ano" style="width: 50%;" name="ano">
+                {% for a in anos %}
+                  <option value="{{ a.id }}">{{ a.ano }}</option>
+                {% endfor %}
+              </select>  
             {% csrf_token %}
-            <input type="text" class="form-control" name="nome" value="{{ tipo.nome }}">
+            <label>Matricula</label>
+            <input type="number" class="form-control" name="matricula" value="{{ documento.matricula }}">
+            <label>Nome</label>
+            <input type="text" class="form-control" name="nome" value="{{ documento.nome }}">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -83,9 +127,9 @@
           </button>
         </div>
         <div class="modal-body">
-          <form action="{% url 'tipo-delete' tipo.pk %}" method="post">
+          <form action="{% url 'documento-delete' documento.pk %}" method="post">
             {% csrf_token %}
-            Realmente deseja excluir o <code>{{ tipo.nome }}</code> ?
+            Realmente deseja excluir o <code>{{ documento.nome }}</code> ?
             Essa ação não poderá ser desfeita!
         </div>
         <div class="modal-footer">

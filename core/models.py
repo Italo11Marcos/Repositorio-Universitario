@@ -118,5 +118,9 @@ class Documento(models.Model):
     def __str__(self):
         return self.titulo
 
+    def delete(self, *args, **kwargs):
+        self.file.delete()
+        super().delete(*args, **kwargs)
+
 
 

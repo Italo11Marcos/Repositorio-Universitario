@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView, CreateView, DetailView, UpdateView, DeleteView, ListView
+from django.views.generic import TemplateView, CreateView, DetailView, UpdateView, DeleteView, ListView, View
 from .models import *
 from .forms import *
 from django.urls import reverse_lazy
@@ -7,6 +7,12 @@ from django.contrib import messages
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 
 # Create your views here.
+# Site Views
+class SiteView(TemplateView):
+    template_name = 'site/index.html'
+    
+
+# Panel View
 class PanelView(TemplateView):
     template_name = 'panel/panel/index.html'
 
@@ -400,10 +406,20 @@ class DetailDocumentoView(DetailView):
     model = Documento
     template_name = 'panel/documento/detail.html'
     context_object_name = 'documento'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['autors'] = Autor.objects.order_by('?').all()
+        context['programas'] = Programa.objects.order_by('?').all()
+        context['orientadors'] = Orientador.objects.order_by('?').all()
+        context['tipos'] = TipoDocumento.objects.order_by('?').all()
+        context['anos'] = AnoPublicacao.objects.order_by('?').all()
+        context['keys'] = PalavrasChave.objects.order_by('?').all()
+        return context
 
 class UpdateDocumentoView(UpdateView):
     model = Documento
-    fields = ['matricula', 'nome']
+    fields = ['titulo', 'file', 'autor', 'programa', 'orientador', 'keys', 'ano', 'tipo']
     success_url = reverse_lazy('documento-index')
 
     def form_valid(self, form, *args, **kwargs):

@@ -7,6 +7,13 @@
 <!-- DataTables -->
 <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
 <link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
 {% endblock %}
 
 {% block layouts %}
@@ -33,7 +40,11 @@
         </div>
         <div class="card-body">
           <p> <label>{{ documento.tipo }}</label> 0 </p>
+          {% if documento.file %}
           <a href="{{ documento.file.url }}" target="_blank" rel="noopener noreferrer">Arquivo</a>
+          {% else %}
+          Arquivo não disponível.
+          {% endif %}
           <div class="row">
             
           </div>
@@ -63,9 +74,9 @@
           <form action="{% url 'documento-update' documento.pk %}" method="post" id="form-documento" enctype="multipart/form-data">
               {% csrf_token %}
               <label>Título</label>
-              <input type="text" class="form-control" name="titulo">
+              <input type="text" class="form-control" name="titulo" value="{{ documento.titulo }}">
               <label>Arquivo</label>
-              <input type="file" class="form-control" name="file">
+              <input type="file" class="form-control" name="file" value="{{ documento.file }}">
               <label>Autor</label>
               <select name="autor" class="duallistbox" multiple="multiple" required>
                 {% for a in autors %}
@@ -102,11 +113,6 @@
                   <option value="{{ a.id }}">{{ a.ano }}</option>
                 {% endfor %}
               </select>  
-            {% csrf_token %}
-            <label>Matricula</label>
-            <input type="number" class="form-control" name="matricula" value="{{ documento.matricula }}">
-            <label>Nome</label>
-            <input type="text" class="form-control" name="nome" value="{{ documento.nome }}">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -129,7 +135,7 @@
         <div class="modal-body">
           <form action="{% url 'documento-delete' documento.pk %}" method="post">
             {% csrf_token %}
-            Realmente deseja excluir o <code>{{ documento.nome }}</code> ?
+            Realmente deseja excluir o <code>{{ documento.titulo }}</code> ?
             Essa ação não poderá ser desfeita!
         </div>
         <div class="modal-footer">
@@ -150,6 +156,29 @@
 {% endblock %}
 
 {% block js %}
+
+<!-- Select2 -->
+<script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+
+<script>
+  $(function () {
+   //Initialize Select2 Elements
+   $('.select2').select2()
+
+   //Initialize Select2 Elements
+   $('.select2bs4').select2({
+     theme: 'bootstrap4'
+   })
+  }); 
+</script>
+
+<script>
+   //Bootstrap Duallistbox
+   $('.duallistbox').bootstrapDualListbox()
+</script>
 
 {% if messages %}
         {% for message in messages %}

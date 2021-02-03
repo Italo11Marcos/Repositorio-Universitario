@@ -3,55 +3,153 @@
 {% load static %}
 
 {% block head %}
+<!-- Font Awesome -->
+<link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+
+<!-- DataTables -->
+<link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
 {% endblock %}
 
 {% block title %} Repositório Universitário {% endblock %} 
 
 {% block content %}
 <main role="main" class="container">
-    <div class="jumbotron mt-5">
-      <h1>Navbar example</h1>
-      <p class="lead">This example is a quick exercise to illustrate how fixed to top navbar works. As you scroll, it will remain fixed to the top of your browser’s viewport.</p>
-      <a class="btn btn-lg btn-primary" href="/docs/4.6/components/navbar/" role="button">View navbar docs &raquo;</a>
+    <div class="jumbotron mt-1">
+      <h1 class="display-4 text-center">Repositório Universitário</h1>
+      <form action="{% url 'site' %}" method="post">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col md-12">
+            <label>Título</label>
+            <input type="text" class="form-control" name="titulo" placeholder="Título desejado" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col md-3">
+            <label>Palavras-Chave</label>
+            <select name="keys" class="select2" multiple="multiple" data-placeholder="Selecione a palavra chave" style="width: 100%;" required>
+              {% for k in keys %}
+                <option value="{{ k.id }}">{{ k.nome }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col md-3">
+            <label>Programa</label>
+            <select class="select2" multiple="multiple" data-placeholder="Selecione o programa" style="width: 100%;" name="programa" required>
+              {% for p in programas %}
+                <option value="{{ p.id }}">{{ p.nome }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col md-3">
+            <label>Tipo</label>
+            <select class="select2" multiple="multiple" data-placeholder="Selecione o tipo" style="width: 100%;" name="tipo" required>
+              {% for t in tipos %}
+                <option value="{{ t.id }}">{{ t.nome }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col md-3">
+            <label>Ano</label>
+            <select class="select2" multiple="multiple" data-placeholder="Selecione o ano" style="width: 100%;" name="ano" required>
+              {% for a in anos %}
+                <option value="{{ a.id }}">{{ a.ano }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-secondary">Pesquisar</button>
+      </form>
+
       <hr>
-      <div class="card-deck">
-        <div class="col mb-3">
-            <div class="card">
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item">An item</li>
-                  <li class="list-group-item">A second item</li>
-                  <li class="list-group-item">A third item</li>
-                </ul>
-            </div>
-        </div>
-        <div class="col mb-3">
-            <div class="card">
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item">An item</li>
-                  <li class="list-group-item">A second item</li>
-                  <li class="list-group-item">A third item</li>
-                </ul>
-            </div>
-        </div>
-        <div class="col mb-3">
-            <div class="card">
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item">An item</li>
-                  <li class="list-group-item">A second item</li>
-                  <li class="list-group-item">A third item</li>
-                </ul>
-            </div>
-        </div>
-        <div class="col mb-3">
-            <div class="card">
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item">An item</li>
-                  <li class="list-group-item">A second item</li>
-                  <li class="list-group-item">A third item</li>
-                </ul>
-            </div>
-        </div>
-      </div>
+      {% if documentos != 0 %}
+
+      <table id="table-documento" class="table table-bordered table-hover dataTable">
+        <thead>
+            <tr>
+                <th class="text-center">Título</th>
+                <th class="text-center">Programa</th>
+                <th class="text-center">Ano</th>
+                <th class="text-center">Autor</th>
+                <th class="text-center">Orientador</th>
+                <th class="text-center">Chaves</th>
+                <th class="text-center">PDF</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in documentos %}
+                <tr>
+                    <td>{{ d.titulo }}</td>
+                    <td>{{ d.programa }}</td>
+                    <td>{{ d.ano }}</td>
+                    <td>
+                      {% for a in d.autor.all %}
+                      {{ a }}
+                      {% endfor %}
+                    </td>
+                    <td>{{ d.orientador }}</td>
+                    <td>
+                      {% for k in d.keys.all %}
+                      {{ k }}
+                      {% endfor %}
+                    </td>
+                    <td><a href="{{ d.file.url }}" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-pdf"></i></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+
+      {% endif %}
+
     </div>
   </main>
+{% endblock %}
+
+{% block js %}
+<!-- Select2 -->
+<script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+
+<script>
+  $(function () {
+   //Initialize Select2 Elements
+   $('.select2').select2()
+
+   //Initialize Select2 Elements
+   $('.select2bs4').select2({
+     theme: 'bootstrap4'
+   })
+  }); 
+</script>
+
+<script>
+   //Bootstrap Duallistbox
+   $('.duallistbox').bootstrapDualListbox()
+</script>
+
+<!-- DataTables -->
+<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+
+<script>
+  $(function () {
+    $("#table-documento").DataTable({
+      "responsive": true,
+      "autoWidth": false,
+    });
+  });
+</script>
 {% endblock %}

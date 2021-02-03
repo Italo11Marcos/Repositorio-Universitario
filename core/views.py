@@ -8,9 +8,33 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 
 # Create your views here.
 # Site Views
-class SiteView(TemplateView):
-    template_name = 'site/index.html'
+def SiteView(request):
+
+    documentos = 0
     
+    if request.method == 'POST':
+        titulo = request.POST.get('titulo', False)
+        autor = request.POST.get('autor', False)
+        programa = request.POST.get('programa', False)
+        orientador = request.POST.get('orientador', False)
+        tipo = request.POST.get('tipo', False)
+        ano = request.POST.get('ano', False)
+        keys = request.POST.get('keys', False)
+
+        #print('{} \n {} \n {} \n {} \n {} \n {} \n {}'.format(titulo, autor, programa, orientador, tipo, ano, keys))
+        documentos = Documento.objects.filter(titulo__contains=titulo).filter(programa=programa).filter(tipo=tipo).filter(ano=ano).filter(keys=keys)
+
+    context = {
+        'autors' : Autor.objects.order_by('?').all(),
+        'programas' : Programa.objects.order_by('?').all(),
+        'orientadors' : Orientador.objects.order_by('?').all(),
+        'tipos' : TipoDocumento.objects.order_by('?').all(),
+        'anos' : AnoPublicacao.objects.order_by('?').all(),
+        'keys' : PalavrasChave.objects.order_by('?').all(),
+        'documentos': documentos
+    }
+
+    return render(request, 'site/index.html', context)
 
 # Panel View
 class PanelView(TemplateView):

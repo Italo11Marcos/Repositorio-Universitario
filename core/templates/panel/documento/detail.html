@@ -39,9 +39,22 @@
           <h3 class="card-title"> <label>{{ documento.titulo }}</label></h3>
         </div>
         <div class="card-body">
-          <p> <label>{{ documento.tipo }}</label> 0 </p>
+          <p> <label>Tipo de Documento: </label> {{ documento.tipo }} </p>
+          <p> <label>Autor: </label> 
+            {% for a in documento.autor.all %}
+            {{ a }}
+            {% endfor %}
+          </p>
+          <p> <label>Orientador: </label> {{ documento.orientador }} </p>
+          <p> <label>Programa: </label> {{ documento.programa }} </p>
+          <p> <label>Palavras-Chave: </label>
+            {% for k in documento.keys.all %}
+            {{ k }}
+            {% endfor %}
+          </p>
+          <p> <label>Ano: </label> {{ documento.ano }} </p>
           {% if documento.file %}
-          <a href="{{ documento.file.url }}" target="_blank" rel="noopener noreferrer">Arquivo</a>
+          <p> <label>PDF: </label></p><a href="{{ documento.file.url }}" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-pdf"></i></a>
           {% else %}
           Arquivo não disponível.
           {% endif %}

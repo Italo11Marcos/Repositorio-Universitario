@@ -19,7 +19,7 @@
           {% if not request.user.is_staff %}
           {% endif %}
           {% if request.user.is_staff %}
-          {% endif %}
+          
           <!-- Cursos -->
           <li class="nav-item has-treeview">
             <a href="{% url 'curso-index' %}" class="nav-link">
@@ -100,6 +100,7 @@
               </p>
             </a>
           </li>
+          {% endif %}
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

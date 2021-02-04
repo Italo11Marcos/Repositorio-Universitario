@@ -12,8 +12,6 @@
     <!-- /.login-logo -->
     <div class="card">
       <div class="card-body login-card-body">
-        <p class="login-box-msg"><img src=" {% static 'dist/img/unimontes.png' %} " alt="Logo unimontes" class="img-fluid"></p>
-  
         <form action="#" method="post">
             {% csrf_token %}
           <div class="input-group mb-3">
@@ -23,6 +21,7 @@
                 <span class="fas fa-envelope"></span>
               </div>
             </div>
+            {{ form.username.errors }}
           </div>
           <div class="input-group mb-3">
             <input type="password" class="form-control" placeholder="Senha" name="password">
@@ -31,6 +30,7 @@
                 <span class="fas fa-lock"></span>
               </div>
             </div>
+            {{ form.username.password }}
           </div>
           <div class="row">
             <div class="col-8">
@@ -49,12 +49,12 @@
           </div>
         </form>
   
-        <p class="mb-1">
+        <!-- <p class="mb-1">
           <a href="forgot-password.html">Eu esqueci a minha senha!</a>
         </p>
         <p class="mb-0">
           <a href="#" class="text-center">Criar conta</a>
-        </p>
+        </p> -->
       </div>
       <!-- /.login-card-body -->
     </div>

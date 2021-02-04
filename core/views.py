@@ -5,6 +5,7 @@ from .forms import *
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 # Create your views here.
 # Site Views
@@ -37,13 +38,26 @@ def SiteView(request):
     return render(request, 'site/index.html', context)
 
 # Panel View
-class PanelView(TemplateView):
+class PanelView(UserPassesTestMixin, TemplateView):
+    login_url = 'login'
     template_name = 'panel/panel/index.html'
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            raise Http404('Você não tem permissão')
 
 # Cursos Views
 class ListCursoView(ListView):
     model = Curso
     template_name = 'panel/cursos/index.html'
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            raise Http404('Você não tem permissão')
 
     def get_context_data(self, **kwargs):
         context = super(ListCursoView, self).get_context_data(**kwargs)

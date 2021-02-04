@@ -141,8 +141,8 @@ AUTH_USER_MODEL = 'core.CustomUsuario'
 # ----------------------------------------------------------
 # --- Login Lougout User --- #
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'index'
-LOGOUT_REDIRECT_URL = 'index'
+LOGIN_REDIRECT_URL = 'panel'
+LOGOUT_REDIRECT_URL = 'login'
 
 # ----------------------------------------------------------
 # Mensagens

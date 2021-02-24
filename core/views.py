@@ -22,8 +22,15 @@ def SiteView(request):
         ano = request.POST.get('ano', False)
         keys = request.POST.get('keys', False)
 
+        filters = {
+            key: value
+            for key, value in request.POST.items()
+            if key in ['programa', 'tipo', 'ano', 'keys']
+        }
+
         #print('{} \n {} \n {} \n {} \n {} \n {} \n {}'.format(titulo, autor, programa, orientador, tipo, ano, keys))
-        documentos = Documento.objects.filter(titulo__contains=titulo).filter(programa=programa).filter(tipo=tipo).filter(ano=ano).filter(keys=keys)
+        #documentos = Documento.objects.filter(titulo__contains=titulo).filter(programa=programa).filter(tipo=tipo).filter(ano=ano).filter(keys=keys)
+        documentos = Documento.objects.filter(titulo__contains=titulo).filter(**filters)
 
     context = {
         'autors' : Autor.objects.order_by('?').all(),
